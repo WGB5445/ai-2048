@@ -25,6 +25,12 @@
 - **手势**：下方空白处也可滑动操作，体验更好。
 - **记录位置**：BUILD.md、PLAN.md、SCRATCHPAD.md、CONVO.md。
 
+## 后续迭代（Git 与 Aptos）
+
+- **Git**：纯游戏版本已提交并打 tag `v1.0-game-only`，Aptos 在 `feature/aptos` 分支开发。
+- **GitHub**：已添加 remote `origin`（如 `https://github.com/aptos-labs/ai-2048.git`）；上传需在本机执行 `git push -u origin main` 与 `git push origin v1.0-game-only`（需已创建仓库并配置认证）。
+- **Aptos**：分阶段（先钱包连接 + 显示地址，再视需求加交易/链上）；方案依官方 React Native / Mobile 文档。
+
 ## 运行说明
 
 - 安装依赖：`npm install`  

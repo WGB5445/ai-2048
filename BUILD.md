@@ -207,3 +207,8 @@ npm start
 - **编译可以成功吗？** 可以，前提是环境按上面装好、iOS 做完 `pod install`、用 `.xcworkspace` 打开。
 - **你该做的事**：先完成阶段 0 和阶段 1（环境 + 能跑起来），再按需做阶段 2 的打包；建议先 Android 后 iOS，先 debug 后 release。
 - 若某一步报错，把**完整终端报错**或 Xcode/Android Studio 的报错贴出来，再针对那一步查（例如：pod 失败、JDK 版本、ANDROID_HOME、签名等），会更容易排查。
+
+### Git 与 GitHub
+
+- 当前仓库用 Git 保留「纯游戏」版本（tag：`v1.0-game-only`），Aptos 在 `feature/aptos` 分支开发。
+- 上传到 GitHub 前：在 GitHub 上创建仓库并记下 URL，执行 `git remote add origin <URL>`（若尚未添加），再执行 `git push -u origin main` 与 `git push origin v1.0-game-only`。

@@ -89,6 +89,11 @@ ai-2048/
 - **布局**：头部（分数 + New Game）固定在上方；棋盘在下方 `flex: 1` 区域内垂直、水平居中。
 - **手势区域**：`GestureDetector` 包裹整个游戏区域（含棋盘与下方空白），下方空白处滑动也可触发方向移动。
 
+### 4.7 Aptos 与钱包
+
+- 计划接入 Aptos 钱包（连接 + 显示地址），后续视需求加交易/链上读写。
+- 具体方案依 Aptos 官方 React Native / Mobile 文档与所选钱包方式（如 Petra、WalletConnect）。
+
 ---
 
 ## 五、Biome 配置
