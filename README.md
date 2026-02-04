@@ -1,5 +1,25 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+# Ai2048 — React Native 2048
+
+2048 游戏，支持 Android/iOS，多尺寸适配，Biome 规范，完整持久化与 Reanimated 动画。
+
+## 真机/模拟器手动检查清单
+
+在设备上验证关键路径（与 Jest 单元测试互补）：
+
+- 启动 app → 棋盘与分数（Score、Best、New Game）正常显示  
+- 上下左右滑动 → 方块移动/合并，分数增加  
+- 杀进程再打开 → 若有未结束对局则弹出「Resume game?」，选 Resume 可恢复  
+- 游戏结束 → Game Over 弹层；达到 2048 → You Win 弹层  
+- 横竖屏 → 布局随尺寸变化  
+
+详见 [SCRATCHPAD.md](SCRATCHPAD.md)。
+
+**打包 iOS / Android**：见 [BUILD.md](BUILD.md)（环境、运行、APK/AAB/IPA 步骤与清单）。
+
+---
+
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
