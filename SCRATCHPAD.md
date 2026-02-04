@@ -44,7 +44,9 @@
 - 棋盘 key：4x4 网格位置稳定，使用 (r,c) 作为 key，在 biome overrides 中对该文件关闭 noArrayIndexKey。  
 - 未实现「滑动」动画（方块从旧格滑到新格），需为每个方块维护 id 与 (row,col)，实现成本较高；当前仅实现 spawn 与 merge 的 scale/opacity 动画。  
 - **布局与手势优化**：按钮偏上、棋盘居中；手势区域扩大至整个游戏区域（含下方空白），滑动体验更好；已在 BUILD.md、PLAN.md、CONVO.md 中记录。  
-- **Git 保留版本与 Aptos**：当前版本已提交并打 tag `v1.0-game-only`，Aptos 在 `feature/aptos` 分支开发；上传 GitHub 需执行 `git push -u origin main` 与 `git push origin v1.0-game-only`；Aptos 分阶段（先钱包连接后链上）。  
+- **Git 保留版本与 Aptos**：当前版本已提交并打 tag `v1.0-game-only`，Aptos 在 `feature/aptos` 分支开发；远程为 WGB5445/ai-2048（SSH：git@github.com:WGB5445/ai-2048.git），推送三步见 BUILD.md「Git 与 GitHub」；Aptos 分阶段（先钱包连接后链上）。  
+- **游戏结束上传分数**：Petra Deep Link 实现连接 + signAndSubmit；新增 `src/aptos/petraDeepLink.ts`、`src/aptos/encoding.ts`，GameOver 增加「Upload Score with Petra」按钮；Deep Link scheme ai2048（iOS/Android 已配置）；依赖 tweetnacl；链上占位 `0x1::game::submit_score`；详见 BUILD/PLAN/CONVO。
+- **键盘与手柄**：支持外接键盘（方向键、WASD）与物理手柄（D-pad）；依赖 `react-native-keyevent`；Android 在 MainActivity 转发 key 事件、MainApplication 注册 KeyEventPackage；iOS 在 AppDelegate 注册 UIKeyCommand（方向键 + w/a/s/d），Bridging Header 调用 RNKeyEvent；JS 层 `useKeyAndGamepadInput(move)` 在 GameScreen 内订阅；详见 BUILD/PLAN/CONVO。
 
 ## 真机/模拟器手动检查清单（测试真实性互补）
 
@@ -52,6 +54,7 @@
 
 - [ ] 启动 app → 出现棋盘与分数（Score、Best、New Game）
 - [ ] 上下左右滑动 → 方块移动且可合并，分数增加
+- [ ] （可选）连接键盘或手柄 → 方向键或 WASD 可移动方块
 - [ ] 杀进程再打开 → 若有未结束对局则弹出「Resume game?」，选 Resume 恢复棋盘
 - [ ] 游戏结束（无空位且无法合并）→ 出现 Game Over 弹层，可点 Try Again
 - [ ] 达到 2048 → 出现 You Win 弹层，可点 Keep Playing 继续

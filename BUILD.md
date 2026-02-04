@@ -99,6 +99,14 @@
 
 - **布局**：按钮（分数 + New Game）在上方，游戏棋盘在屏幕中间（除头部外的区域垂直、水平居中）。
 - **操作**：滑动手势在整个游戏区域生效，包括棋盘下方空白处，便于单手操作。
+- **键盘与手柄**：支持外接键盘（方向键、WASD）和物理手柄（D-pad）。连接蓝牙/有线键盘或手柄后可直接操作；在 Mac 上通过「连续互通」等方式控制 iPhone 时，Mac 键盘方向键或 WASD 也可控制游戏。依赖 `react-native-keyevent`；Android 在 MainActivity 转发 key 事件，iOS 使用自定义 `KeyCommandWindow` 处理 UIKeyCommand（方向键 + w/a/s/d），保证模拟器/真机都能收到按键。**iOS 模拟器**：需在 Simulator 菜单 **I/O → Keyboard** 中勾选 **Connect Hardware Keyboard**；若仍无反应，再勾选 **I/O → Input → Send Keyboard Input to Device**，并确保模拟器窗口已获得焦点（点一下模拟器再按方向键）。
+
+### 游戏结束上传分数（Petra）
+
+- 游戏结束后可点「用 Petra 上传分数」；通过 Deep Link 调起 Petra 连接与签名并提交交易，将本局分数上链。
+- 本 App 需配置 Deep Link scheme **ai2048**（iOS Info.plist、Android intent-filter 已配置），供 Petra 回调。
+- 上传分数依赖 **react-native-get-random-values**（为加密提供 `crypto.getRandomValues`）；该库含原生模块，**iOS 必须在 `ios` 目录执行 `bundle exec pod install` 并重新构建**后，上传功能才能正常使用。
+- 链上合约与占位配置见 [PLAN.md](PLAN.md) 或 `src/aptos/petraDeepLink.ts` 中的 `APTOS_SCORE_FUNCTION`；实际上线前需替换为已部署的 Move 模块地址与函数名。
 
 ### 1.1 启动 Metro（两个平台共用）
 
@@ -143,6 +151,7 @@ npm start
 - 报错「CoreSimulator / IDESimulatorFoundation 无法加载」：在终端执行 `xcodebuild -runFirstLaunch`，等待安装完成后再试。
 - 报错「iOS devices or simulators not detected」：未安装模拟器运行时。打开 Xcode → **Window → Devices and Simulators** → **Simulators** 标签 → 左下角 **+** 添加设备（如 iPhone 16），按提示下载对应 iOS 运行时；或 Xcode → **Settings → Platforms** 下载 iOS 平台。
 - 签名错误：在 Xcode 里打开 `Ai2048.xcworkspace`，在 Signing & Capabilities 里选你的 Apple ID 团队并勾选 Automatically manage signing。
+- **点击「Upload Score with Petra」出现「Native module not found」**：上传分数依赖 `react-native-get-random-values` 的原生模块。请在项目根目录执行 `cd ios && bundle exec pod install && cd ..`，然后重新运行应用（如 `npm run ios`）。新增或更新含原生模块的依赖后，都需在 `ios` 下执行一次 `bundle exec pod install` 并重新构建。
 
 ---
 
@@ -189,6 +198,18 @@ npm start
 
 ---
 
+### Build 测试（本地与 CI）
+
+- **本地**：在项目根目录执行以下命令可验证编译与测试。
+  - **单元测试**：`npm test`（Jest，不依赖原生环境）。
+  - **Lint**：`npm run lint`。
+  - **Android 编译**：`npm run build:android`（需已设 `ANDROID_HOME` 且 JDK 17、SDK 已装）；产出 `android/app/build/outputs/apk/debug/app-debug.apk`。
+  - **iOS 编译**（仅 macOS）：`npm run build:ios`（需已执行 `cd ios && bundle exec pod install`）；对模拟器构建，不产出 IPA。
+  - **测试 + Android 编译**：`npm run build:test`（先跑 `npm test`，再跑 `npm run build:android`；无 Android 环境时后者会失败）。
+- **CI**：仓库内 [.github/workflows/build.yml](.github/workflows/build.yml) 在 push/PR 到 `main` 或 `feature/aptos` 时自动执行：**Test & Lint**（Node 20、`npm ci`、`npm test`、`npm run lint`）、**Build Android (debug)**（Java 17 + Android SDK + `npm run build:android`）、**Build iOS (simulator)**（macOS、CocoaPods、`npm run build:ios`）。
+
+---
+
 ## 建议你做事的顺序（清单）
 
 按顺序打勾即可：
@@ -196,9 +217,10 @@ npm start
 1. [ ] **环境**：装好 Node 20+、`npm install`；要 Android 就装 JDK 17 + Android Studio + SDK，设好 `ANDROID_HOME`；要 iOS（Mac）就装 Xcode，并在 `ios` 里执行 `bundle install` 和 `bundle exec pod install`。
 2. [ ] **先跑 Android**：`npm start` 一个终端，另一个终端 `npm run android`，直到在模拟器/真机上看到 2048。
 3. [ ] **再跑 iOS**（有 Mac 时）：保持 Metro，执行 `npm run ios`，在模拟器里看到 2048。
-4. [ ] **可选 - Android 打包**：`cd android && ./gradlew assembleDebug`，在 `app/build/outputs/apk/debug/` 取 APK 安装测试。
-5. [ ] **可选 - Android 正式包**：在 `android/app/build.gradle` 里配置 release 签名，再 `./gradlew assembleRelease` 或 `bundleRelease`。
-6. [ ] **可选 - iOS 打包**：Xcode 打开 `Ai2048.xcworkspace`，选真机，Product → Archive，再在 Organizer 里分发。
+4. [ ] **可选 - Build 测试**：`npm test`、`npm run lint`；有 Android 环境时 `npm run build:android`，有 Mac 时 `npm run build:ios`。
+5. [ ] **可选 - Android 打包**：`cd android && ./gradlew assembleDebug`，在 `app/build/outputs/apk/debug/` 取 APK 安装测试。
+6. [ ] **可选 - Android 正式包**：在 `android/app/build.gradle` 里配置 release 签名，再 `./gradlew assembleRelease` 或 `bundleRelease`。
+7. [ ] **可选 - iOS 打包**：Xcode 打开 `Ai2048.xcworkspace`，选真机，Product → Archive，再在 Organizer 里分发。
 
 ---
 
@@ -211,4 +233,9 @@ npm start
 ### Git 与 GitHub
 
 - 当前仓库用 Git 保留「纯游戏」版本（tag：`v1.0-game-only`），Aptos 在 `feature/aptos` 分支开发。
-- 上传到 GitHub 前：在 GitHub 上创建仓库并记下 URL，执行 `git remote add origin <URL>`（若尚未添加），再执行 `git push -u origin main` 与 `git push origin v1.0-game-only`。
+- 远程仓库：`origin` 指向 **WGB5445/ai-2048**（SSH：`git@github.com:WGB5445/ai-2048.git`）。
+- **推送步骤**（在项目根目录执行）：  
+  1. `git push -u origin main`（推送主分支）  
+  2. `git push origin v1.0-game-only`（推送纯游戏版 tag）  
+  3. `git push -u origin feature/aptos`（推送 Aptos 开发分支）  
+  完成后代码即已上传到 https://github.com/WGB5445/ai-2048 。

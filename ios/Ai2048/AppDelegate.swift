@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeDelegate = delegate
     reactNativeFactory = factory
 
-    window = UIWindow(frame: UIScreen.main.bounds)
+    window = KeyCommandWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
       withModuleName: "Ai2048",
