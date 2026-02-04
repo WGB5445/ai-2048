@@ -58,7 +58,8 @@ export function useGameState() {
     if (saved) {
       setBoard(saved.board);
       setScore(saved.score);
-      setGameOver(false);
+      const alreadyOver = isGameOver(saved.board);
+      setGameOver(alreadyOver);
       setWon(hasWon(saved.board));
       setHasRestored(true);
     }

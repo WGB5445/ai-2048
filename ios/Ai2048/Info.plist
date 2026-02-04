@@ -51,5 +51,16 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ai2048</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>Ai2048</string>
+		</dict>
+	</array>
 </dict>
 </plist>

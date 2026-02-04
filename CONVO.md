@@ -25,6 +25,20 @@
 - **手势**：下方空白处也可滑动操作，体验更好。
 - **记录位置**：BUILD.md、PLAN.md、SCRATCHPAD.md、CONVO.md。
 
+## 后续迭代（Git 与 Aptos）
+
+- **Git**：纯游戏版本已提交并打 tag `v1.0-game-only`，Aptos 在 `feature/aptos` 分支开发。
+- **GitHub**：远程为 **WGB5445/ai-2048**（SSH：`git@github.com:WGB5445/ai-2048.git`）。推送步骤：`git push -u origin main` → `git push origin v1.0-game-only` → `git push -u origin feature/aptos`；详见 BUILD.md「Git 与 GitHub」。
+- **Aptos**：分阶段（先钱包连接 + 显示地址，再视需求加交易/链上）；方案依官方 React Native / Mobile 文档。
+
+## 后续迭代（游戏结束上传分数）
+
+- 游戏结束后可用 Petra 签名并上传分数；通过 Deep Link 调用 Petra（connect + signAndSubmit）；链上需合约 submit_score，当前占位 `0x1::game::submit_score`；方案与记录见 BUILD、PLAN、SCRATCHPAD。
+
+## 后续迭代（键盘与手柄）
+
+- 支持外接键盘（方向键、WASD）与物理手柄（D-pad）；在 Mac 上控制 iPhone 时键盘也可操作。依赖 react-native-keyevent；Android MainActivity 转发 key 事件，iOS AppDelegate 注册 UIKeyCommand；JS 层 useKeyAndGamepadInput(move)；方案与记录见 BUILD、PLAN、SCRATCHPAD。
+
 ## 运行说明
 
 - 安装依赖：`npm install`  

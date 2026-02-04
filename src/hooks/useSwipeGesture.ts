@@ -39,12 +39,7 @@ export function useSwipeGesture(onSwipe: (direction: Direction) => void) {
   const panGesture = Gesture.Pan()
     .minDistance(10)
     .onEnd((e) => {
-      runOnJS(handleEnd)(
-        e.translationX,
-        e.translationY,
-        e.velocityX,
-        e.velocityY,
-      );
+      runOnJS(handleEnd)(e.translationX, e.translationY, e.velocityX, e.velocityY);
     });
 
   return panGesture;
