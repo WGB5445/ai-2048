@@ -79,6 +79,7 @@ jobs:
 
       - name: Install CocoaPods and pods
         run: |
+          gem install bundler --force
           cd ios
           bundle config path vendor/bundle
           bundle install
